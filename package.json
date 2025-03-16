@@ -1,0 +1,16 @@
+{
+    "name": "ta-util",
+    
+    "description": "Typed Array Utilities",
+    "main": "ta-util.js",
+    "scripts": {
+        "start": "node ta-util.js"
+    },
+    "author": "James Vickers",
+    "license": "MIT",
+    "dependencies": {
+        "lang-mini": "^0.0.39"
+    },
+    "version": "0.0.1"
+
+}
