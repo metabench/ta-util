@@ -56,14 +56,14 @@ class Tensor {
     }
 
     reshape(newShape) {
-        const currentSize = this.shape.reduce((a, b) => a * b, 1);
+        const currentSize = this.size;
         const newSize = newShape.reduce((a, b) => a * b, 1);
         if (currentSize !== newSize) {
             throw new Error(`Cannot reshape tensor of size ${currentSize} to shape ${newShape}`);
         }
 
         if (!this.isContiguous) {
-            throw new Error('Reshape is currently only supported for contiguous tensors. Call .clone() (not implemented) or ensure the tensor is contiguous.');
+            return this.clone().reshape(newShape);
         }
 
         return new Tensor(this.data, newShape, null, this.offset);
@@ -78,12 +78,44 @@ class Tensor {
         return new Tensor(this.data, newShape, newStrides, this.offset);
     }
 
+    slice(starts, ends) {
+        if (starts.length !== this.ndim || ends.length !== this.ndim) {
+            throw new Error('Slicing requires starts and ends for all dimensions');
+        }
+        const newShape = starts.map((s, i) => ends[i] - s);
+        let newOffset = this.offset;
+        for (let i = 0; i < starts.length; i++) {
+            newOffset += starts[i] * this.strides[i];
+        }
+        return new Tensor(this.data, newShape, this.strides, newOffset);
+    }
+
     get size() {
         return this.shape.reduce((a, b) => a * b, 1);
     }
 
     get ndim() {
         return this.shape.length;
+    }
+
+    clone() {
+        const outData = new this.data.constructor(this.size);
+        const out = new Tensor(outData, this.shape);
+
+        const ndim = this.ndim;
+        const currentIdx = new Array(ndim).fill(0);
+        const size = this.size;
+
+        for (let i = 0; i < size; i++) {
+            outData[i] = this.get(...currentIdx);
+
+            for (let j = ndim - 1; j >= 0; j--) {
+                currentIdx[j]++;
+                if (currentIdx[j] < this.shape[j]) break;
+                currentIdx[j] = 0;
+            }
+        }
+        return out;
     }
 
     add(other) {
@@ -97,6 +129,14 @@ class Tensor {
     }
     div(other) {
         return require('./tensor-ops').div(this, other);
+    }
+
+    sum(axis = null) {
+        return require('./tensor-ops').sum(this, axis);
+    }
+
+    mean(axis = null) {
+        return require('./tensor-ops').mean(this, axis);
     }
 }
 

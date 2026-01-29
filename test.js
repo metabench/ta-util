@@ -33,6 +33,16 @@ const test_tensor = () => {
     const tTransposed = t1.transpose();
     console.log('Transposed Shape:', tTransposed.shape, '(Expected: [2, 2])');
     console.log('Transposed Value at [1, 0]:', tTransposed.get(1, 0), '(Expected: 2)');
+
+    const tSliced = t1.slice([0, 1], [2, 2]); // Rows 0-2, Cols 1-2 -> [2, 4]
+    console.log('Sliced Shape:', tSliced.shape, '(Expected: [2, 1])');
+    console.log('Sliced Value at [0, 0]:', tSliced.get(0, 0), '(Expected: 2)');
+
+    const tReshaped = tTransposed.reshape([4]);
+    console.log('Reshaped (from non-contiguous) Result:', tReshaped.data, '(Expected: [1, 3, 2, 4])');
+
+    console.log('Sum:', t1.sum(), '(Expected: 10)');
+    console.log('Mean:', t1.mean(), '(Expected: 2.5)');
 };
 
 test_deduplicate();

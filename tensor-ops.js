@@ -63,4 +63,41 @@ const sub = (t1, t2) => op(t1, t2, (a, b) => a - b);
 const mul = (t1, t2) => op(t1, t2, (a, b) => a * b);
 const div = (t1, t2) => op(t1, t2, (a, b) => a / b);
 
-module.exports = { add, sub, mul, div };
+const sum = (t, axis = null) => {
+    if (axis === null) {
+        let res = 0;
+        const size = t.size;
+
+        if (t.isContiguous) {
+            const data = t.data;
+            const offset = t.offset;
+            for (let i = 0; i < size; i++) {
+                res += data[offset + i];
+            }
+            return res;
+        }
+
+        const ndim = t.ndim;
+        const currentIdx = new Array(ndim).fill(0);
+        for (let i = 0; i < size; i++) {
+            res += t.get(...currentIdx);
+            for (let j = ndim - 1; j >= 0; j--) {
+                currentIdx[j]++;
+                if (currentIdx[j] < t.shape[j]) break;
+                currentIdx[j] = 0;
+            }
+        }
+        return res;
+    }
+    // Axis reduction not implemented for now to keep it simple
+    throw new Error('Axis-specific reduction not yet implemented');
+};
+
+const mean = (t, axis = null) => {
+    if (axis === null) {
+        return sum(t) / t.size;
+    }
+    throw new Error('Axis-specific reduction not yet implemented');
+};
+
+module.exports = { add, sub, mul, div, sum, mean };

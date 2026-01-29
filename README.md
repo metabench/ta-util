@@ -23,9 +23,12 @@ The `Tensor` class provides a high-performance, multi-dimensional array interfac
 
 * `get(...indices)`: Returns the value at the specified indices.
 * `set(value, ...indices)`: Sets the value at the specified indices.
-* `reshape(newShape)`: Returns a new Tensor view with the specified shape. **Currently only supported for contiguous tensors.**
+* `reshape(newShape)`: Returns a new Tensor view with the specified shape. Automatically clones non-contiguous tensors to a contiguous layout if necessary.
 * `transpose(...axes)`: Returns a new Tensor view with axes reordered.
+* `slice(starts, ends)`: Returns a zero-copy view of a sub-region of the tensor.
+* `clone()`: Returns a new contiguous copy of the tensor.
 * `add(other)`, `sub(other)`, `mul(other)`, `div(other)`: Perform element-wise operations with **broadcasting support**.
+* `sum(axis=null)`, `mean(axis=null)`: Reduction operations (axis-specific reduction coming soon).
 
 ### Properties
 
@@ -65,8 +68,7 @@ This library follows standard tensor conventions (similar to NumPy and PyTorch) 
 
 ## Future Improvements
 
-* **Contiguous Clone:** Method to create a contiguous copy of a non-contiguous tensor (e.g., after a transpose), which will enable `reshape` on any tensor.
 * **Matrix Multiplication (GEMM):** Implementation of high-performance matrix multiplication.
-* **Reductions:** `sum`, `mean`, `max` along specified axes.
+* **Axis Reductions:** Support for `sum`, `mean`, etc., along specific axes.
 * **Slicing:** Support for PyTorch-style slicing (e.g., `tensor.slice([0, 10], [5, 15])`).
 * **GPU Acceleration:** Future support for WebGPU.
