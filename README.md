@@ -70,5 +70,4 @@ This library follows standard tensor conventions (similar to NumPy and PyTorch) 
 
 * **Matrix Multiplication (GEMM):** Implementation of high-performance matrix multiplication.
 * **Axis Reductions:** Support for `sum`, `mean`, etc., along specific axes.
-* **Slicing:** Support for PyTorch-style slicing (e.g., `tensor.slice([0, 10], [5, 15])`).
 * **GPU Acceleration:** Future support for WebGPU.
