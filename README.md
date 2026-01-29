@@ -56,7 +56,9 @@ An object containing utilities for population count (counting set bits).
 ## Limitations & Unimplemented Features
 
 * **Sorting Requirement:** `nta_deduplicate_sorted_ta` and `count_unique_values_in_sorted_ta` require the input array to be sorted. They do not perform sorting themselves.
+* **NaN Handling:** In floating-point arrays (`Float32Array`, `Float64Array`), `NaN` values are treated as distinct from each other due to the nature of `NaN !== NaN` in JavaScript. This means multiple `NaN`s will not be deduplicated.
 * **Homogeneous Concatenation:** `ta_concat` currently requires all input arrays to be of the exact same Typed Array type. It does not support concatenating different types (e.g., `Uint8Array` with `Int8Array`).
+* **Swap Pair Parity:** `swap_paired_array_pairs` requires an even-length array. If an odd-length array is provided, the function will return the original array without performing any swaps.
 * **Error Handling:** Some functions return `undefined` or `false` on failure instead of throwing descriptive errors.
 
 ## Future Improvements
