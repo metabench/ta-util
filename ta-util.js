@@ -40,17 +40,14 @@ const ta_concat = (arr_of_tas) => {
     //  shared constructor
 
     const shared_constructor = get_shared_constructor(arr_of_tas);
-    console.log('shared_constructor', shared_constructor);
     if (shared_constructor) {
         const total_l = get_total_length(arr_of_tas);
         const res = new shared_constructor(total_l);
-        //const l = arr_of_tas.length;
-        let i_w = 0;
+
+        let offset = 0;
         for (const ta of arr_of_tas) {
-            const l = ta.length;
-            for (let c = 0; c < l; c++) {
-                res[i_w++] = ta[c];
-            }
+            res.set(ta, offset);
+            offset += ta.length;
         }
         return res;
     }
@@ -58,31 +55,36 @@ const ta_concat = (arr_of_tas) => {
 }
 
 const nta_deduplicate_sorted_ta = ta => {
+    const l = ta.length;
+    if (l === 0) return new ta.constructor(0);
     // count the number of unique items.
     const count = count_unique_values_in_sorted_ta(ta);
     const res = new ta.constructor(count);
-    let prev = -1, i = 0;
-    for (const n of ta) {
+    let i = 0;
+    let prev = ta[0];
+    res[i++] = prev;
+    for (let c = 1; c < l; c++) {
+        const n = ta[c];
         if (n !== prev) {
             res[i++] = n;
+            prev = n;
         }
-
-        prev = n;
     }
     return res;
 }
 
 
 const count_unique_values_in_sorted_ta = (ta) => {
-    let res = 0;
-    let current, prev = -1, c;
     const l = ta.length;
-    for (c = 0; c < l; c++) {
+    if (l === 0) return 0;
+    let res = 1;
+    let current, prev = ta[0], c;
+    for (c = 1; c < l; c++) {
         current = ta[c];
         if (current !== prev) {
             res++;
+            prev = current;
         }
-        prev = current;
     }
     return res;
 }
@@ -154,6 +156,8 @@ const pop_count = {
     lookup_8, lookup_16, ta: pop_count_typed_array
 }
 
+const Tensor = require('./tensor');
+
 
 module.exports = {
     nta_deduplicate_sorted_ta,
@@ -161,5 +165,6 @@ module.exports = {
     ta_concat,
     get_shared_constructor,
     swap_paired_array_pairs,
-    pop_count
+    pop_count,
+    Tensor
 };
